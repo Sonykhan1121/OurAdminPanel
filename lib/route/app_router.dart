@@ -1,16 +1,20 @@
-import 'package:admin_panel/features/home_page.dart';
-import 'package:admin_panel/features/login_page.dart';
-import 'package:admin_panel/features/sign_up.dart';
-import 'package:admin_panel/features/verifyEmail.dart';
-import 'package:flutter/material.dart';
+import 'package:admin_panel/features/views/home_page.dart';
+import 'package:admin_panel/features/views/login_page.dart';
+import 'package:admin_panel/features/views/sign_up.dart';
+import 'package:admin_panel/features/views/verifyEmail.dart';// Add this import
 import 'package:go_router/go_router.dart';
+
+import '../features/views/admin_splash_screen.dart';
 import 'app_route_names.dart';
 
-
-
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouteNames.login,
+  initialLocation: '/', // Change to splash screen
   routes: [
+    GoRoute(
+      path: AppRouteNames.splash,
+      name: 'splash',
+      builder: (_, __) =>  AdminSplashScreen(), // Add splash route
+    ),
     GoRoute(
       path: AppRouteNames.login,
       name: 'login',
@@ -26,12 +30,10 @@ final GoRouter appRouter = GoRouter(
       name: 'verifyEmail',
       builder: (_, __) => const Verifyemail(),
     ),
-
     GoRoute(
       path: AppRouteNames.homePage,
       name: 'home',
       builder: (_, __) => const HomePage(),
-
     ),
   ],
 );
