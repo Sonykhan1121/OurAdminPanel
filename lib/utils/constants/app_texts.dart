@@ -1,4 +1,5 @@
 class AppTexts {
+  AppTexts._();
   // Validation messages
   static const String userNameInput = 'is required.';
   static const String enterValidEmail = 'Please enter a valid email address.';
@@ -13,4 +14,5 @@ class AppTexts {
   static const String phoneRequired = 'Phone number is required.';
   static const String phoneInvalid =
       'Invalid phone number format. A Bangladeshi phone number must have 11 digits with an optional +8801, 8801, or 01';
+  static const String appName  = "Admin Panel";
 }

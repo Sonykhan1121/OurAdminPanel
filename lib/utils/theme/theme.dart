@@ -1,37 +1,59 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
-import 'custom_themes/alert_dialog_theme.dart';
-import 'custom_themes/appbar_theme.dart';
-import 'custom_themes/bottom_sheet_theme.dart';
-import 'custom_themes/checkbox_theme.dart';
-import 'custom_themes/chip_theme.dart';
-import 'custom_themes/elevated_button_theme.dart';
-import 'custom_themes/outlined_button_theme.dart';
-import 'custom_themes/progress_indicator_theme.dart';
-import 'custom_themes/text_field_theme.dart';
-import 'custom_themes/text_theme.dart';
 
 class DAppTheme {
   DAppTheme._();
 
-  /// -- Light Theme
-  static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    disabledColor: DColors.grey,
+  /// -- Light Fluent Theme
+  static FluentThemeData lightTheme = FluentThemeData(
+
     brightness: Brightness.light,
-    primaryColor: DColors.primary,
-    textTheme: DTextTheme.lightTextTheme,
-    chipTheme: DChipTheme.lightChipTheme,
-    scaffoldBackgroundColor: DColors.white,
-    appBarTheme: DAppBarTheme.lightAppBarTheme,
-    fontFamily: GoogleFonts.poppins().fontFamily,
-    checkboxTheme: DCheckBoxTheme.lightCheckboxTheme,
-    //dialogTheme: DAlertDialogTheme().alertDialogThemeTheme,
-    bottomSheetTheme: DBottomSheetTheme.lightBottomSheetTheme,
-    elevatedButtonTheme: DElevatedButtonTheme.lightElevatedButtonTheme,
-    outlinedButtonTheme: DOutlinedButtonTheme.lightOutlinedButtonTheme,
-    inputDecorationTheme: DTextFormFieldTheme.lightInputDecorationTheme,
-    progressIndicatorTheme: DProgressIndicatorTheme.lightProgressIndicatorTheme,
+    accentColor: AccentColor.swatch({
+      'normal': DColors.primary,
+      'lighter': DColors.accent,
+      'darker': DColors.secondary,
+    }),
+    scaffoldBackgroundColor: DColors.primary,
+    typography: Typography.raw(
+      display: TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        color: DColors.textPrimary,
+      ),
+      title: TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        fontWeight: FontWeight.bold,
+        color: DColors.textPrimary,
+      ),
+      body: TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        color: DColors.bodyTextColor,
+      ),
+      bodyStrong: TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        fontWeight: FontWeight.w600,
+        color: DColors.textPrimary,
+      ),
+      caption: TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        color: DColors.darkGrey,
+        fontSize: 12,
+      ),
+    ),
+    buttonTheme: ButtonThemeData(
+      defaultButtonStyle: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(DColors.primary),
+        foregroundColor: WidgetStateProperty.all(DColors.textWhite),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      checkedDecoration: WidgetStateProperty.all(
+        BoxDecoration(
+          color: DColors.primary,
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+    ),
+
   );
 }

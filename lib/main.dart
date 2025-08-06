@@ -1,10 +1,15 @@
 import 'package:admin_panel/route/app_router.dart';
+import 'package:admin_panel/utils/constants/app_texts.dart';
+import 'package:admin_panel/utils/theme/theme.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 import 'core/env/env.dart';
 import 'core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'features/auth_features/view_models/auth_view_model.dart';
 
 
 void main() async {
@@ -25,10 +30,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Admin Panel',
-      debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_)=>sl<AuthViewModel>()),
+
+      ],
+      child: FluentApp.router(
+        title: AppTexts.appName,
+        debugShowCheckedModeBanner: false,
+        theme: DAppTheme.lightTheme,
+        routerConfig: appRouter,
+
+      ),
     );
   }
 }

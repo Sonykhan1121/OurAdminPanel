@@ -1,6 +1,5 @@
 import 'package:admin_panel/route/app_route_names.dart';
-import 'package:flutter/material.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 
 class AdminSplashScreen extends StatefulWidget {
@@ -77,7 +76,7 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
     // Navigate to main app after splash
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
-     context.go(AppRouteNames.homePage);
+     context.go(AppRouteNames.login_path);
     }
   }
 
@@ -91,8 +90,7 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return fluent.FluentApp(
-      home: fluent.NavigationView(
+    return NavigationView(
         content: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -131,8 +129,8 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            fluent.FluentIcons.local_admin,
+                          child:  Icon(
+                            FluentIcons.local_admin,
                             size: 60,
                             color: Colors.white,
                           ),
@@ -141,7 +139,7 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
                         const SizedBox(height: 40),
 
                         // App Title
-                        const Text(
+                        Text(
                           'Admin Panel',
                           style: TextStyle(
                             fontSize: 32,
@@ -236,8 +234,8 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
             ),
           ),
         ),
-      ),
-      theme: fluent.FluentThemeData.dark(),
-    );
+      );
+
+
   }
 }

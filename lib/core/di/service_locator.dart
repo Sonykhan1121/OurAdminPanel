@@ -1,15 +1,20 @@
-
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data_layer/services/auth_service.dart';
+import '../../data_layer/repositories/auth_repository.dart';
+import '../../features/auth_features/view_models/auth_view_model.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
-  // Initialize SupaBase
-  sl.registerLazySingleton<SupabaseClient>(()=>Supabase.instance.client);
+  sl.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
+  // Services
+  sl.registerLazySingleton<AuthService>(() => AuthService(sl()));
 
+  // Repositories
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepository(sl()));
 
-
+  // ViewModels
+  sl.registerFactory<AuthViewModel>(() => AuthViewModel(sl()));
 }
-
