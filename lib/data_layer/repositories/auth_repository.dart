@@ -16,6 +16,8 @@ class AuthRepository {
     return res.user;
   }
 
+  Future<User?> getCurrentUser() => _service.getCurrentUser();
+
   Future<void> logout() => _service.signOut();
 
   Future<void> sendPasswordReset(String email) =>

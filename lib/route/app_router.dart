@@ -1,12 +1,12 @@
 import 'package:admin_panel/features/auth_features/views/forget_password_page.dart';
 import 'package:admin_panel/features/auth_features/views/login_page.dart';
 import 'package:admin_panel/features/auth_features/views/signUp_page.dart';
+import 'package:admin_panel/features/home_features/home_page.dart';
+import 'package:admin_panel/features/navigation_features/main_navigation_view.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/intro_features/views/home_page.dart';
 import '../features/intro_features/views/verifyEmail.dart';
 import '../features/splash_screen_features/views/admin_splash_screen.dart';
-import '../utils/global_context.dart';
 import 'app_route_names.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -35,7 +35,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRouteNames.homePage_path,
       name: AppRouteNames.homePage,
-      builder: (_, __) => const HomePage(),
+      builder: (_, __) =>  HomePage(),
+    ),
+    GoRoute(
+      path: AppRouteNames.mainNavigationView_path,
+      name: AppRouteNames.mainNavigationViewPage,
+      builder: (_, __) =>  MainNavigationView(),
     ),
     GoRoute(
       path: AppRouteNames.forget_password_path,

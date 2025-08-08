@@ -13,5 +13,9 @@ class AppRouteNames{
   //features
   static const String homePage_path = '/home';
   static const String homePage = 'home';
+  static const String introPage_path = '/intro';
+  static const String introPage = 'intro';
+  static const String mainNavigationView_path = '/mainNavigationView';
+  static const String mainNavigationViewPage = 'mainNavigationView';
 
 }

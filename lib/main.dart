@@ -1,3 +1,4 @@
+import 'package:admin_panel/features/admin_local_data_features/admin_local_data.dart';
 import 'package:admin_panel/route/app_router.dart';
 import 'package:admin_panel/utils/constants/app_texts.dart';
 import 'package:admin_panel/utils/theme/theme.dart';
@@ -21,6 +22,7 @@ void main() async {
 
   // Setup dependency injection
   await initDependencies();
+  await AdminLocalData.initialize();
 
   runApp(const MyApp());
 }

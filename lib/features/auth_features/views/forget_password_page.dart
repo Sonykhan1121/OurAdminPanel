@@ -1,9 +1,15 @@
 // Forgot Password Page
+import 'package:admin_panel/route/app_route_names.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/di/service_locator.dart';
+import '../../../utils/constants/colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_input_field.dart';
 import '../../widgets/custom_text_button.dart';
+import '../../widgets/show_info_bar.dart';
+import '../view_models/auth_view_model.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -13,6 +19,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final authProvider = sl<AuthViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _isLoading = false;
@@ -27,9 +34,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _handleResetPassword() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        await authProvider.SendPasswordReset(_emailController.text.toString());
+      } catch (e) {
+        showInfoBar(context, title: e.toString());
+        setState(() {
+          _isLoading = false;
+          return;
+        });
+      }
 
       setState(() {
         _isLoading = false;
@@ -50,7 +63,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: DColors.secondary,
                 blurRadius: 20,
                 offset: const Offset(0, 4),
               ),
@@ -161,7 +174,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         const SizedBox(height: 32),
         CustomButton(
           text: 'Back to Sign In',
-          onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+          onPressed: () => context.pop(),
         ),
         const SizedBox(height: 16),
         CustomTextButton(

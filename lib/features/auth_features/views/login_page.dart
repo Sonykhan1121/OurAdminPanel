@@ -1,6 +1,7 @@
 // Login Page
 import 'dart:ui';
 
+import 'package:admin_panel/features/admin_local_data_features/admin_local_data.dart';
 import 'package:admin_panel/features/auth_features/view_models/auth_view_model.dart';
 import 'package:admin_panel/features/widgets/show_info_bar.dart';
 import 'package:admin_panel/route/app_route_names.dart';
@@ -45,7 +46,10 @@ class _LoginPageState extends State<LoginPage> {
      if(authProvider.currentUser!=null)
        {
          print('loign: ${authProvider.currentUser.toString()}');
-         context.go(AppRouteNames.homePage_path);
+         AdminLocalData.adminRemember = true;
+         AdminLocalData.user = authProvider.currentUser;
+         AdminLocalData.saveAdminData();
+         context.go(AppRouteNames.mainNavigationView_path);
        }
      else
        {

@@ -1,6 +1,11 @@
+import 'package:admin_panel/features/admin_local_data_features/admin_local_data.dart';
 import 'package:admin_panel/route/app_route_names.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../core/di/service_locator.dart';
+import '../../auth_features/view_models/auth_view_model.dart';
 
 class AdminSplashScreen extends StatefulWidget {
   const AdminSplashScreen({Key? key}) : super(key: key);
@@ -76,7 +81,28 @@ class _AdminSplashScreenState extends State<AdminSplashScreen>
     // Navigate to main app after splash
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
-     context.go(AppRouteNames.login_path);
+      final authProvider = sl<AuthViewModel>();
+      if(authProvider.isLoggedIn())
+        {
+          print('from authProvider');
+          await authProvider.getCurrentUser();
+          print('${authProvider.currentUser}');
+          AdminLocalData.adminRemember = true;
+          AdminLocalData.user  = authProvider.currentUser;
+          AdminLocalData.saveAdminData();
+          context.go(AppRouteNames.mainNavigationView_path);
+        }
+      else if(AdminLocalData.adminRemember)
+        {
+          print('from AdminLocalData ${AdminLocalData.user}');
+          // If user is logged in, redirect to main navigation view
+          context.go(AppRouteNames.mainNavigationView_path);
+        }
+      else
+        {
+          // If user is not logged in, redirect to login page
+          context.go(AppRouteNames.login_path);
+        }
     }
   }
 

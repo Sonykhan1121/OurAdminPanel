@@ -11,12 +11,13 @@ class AuthViewModel extends ChangeNotifier {
 
   bool isLoading = false;
   String? errorMessage;
-  User? currentUser;
+  User? _currentUser;
+  User? get currentUser => _currentUser;
 
   Future<void> login(String email, String password) async {
     _setLoading(true);
     try {
-      currentUser = await _repo.login(email, password);
+      _currentUser = await _repo.login(email, password);
       errorMessage = null;
     } catch (e) {
       errorMessage = e.toString();
@@ -27,7 +28,7 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> register(String email, String password) async {
     _setLoading(true);
     try {
-      currentUser = await _repo.register(email, password);
+      _currentUser = await _repo.register(email, password);
       errorMessage = null;
     } catch (e) {
       errorMessage = e.toString();
@@ -35,9 +36,35 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(false);
   }
 
+  Future<void> SendPasswordReset(String email) async {
+    _setLoading(true);
+    try {
+      await _repo.sendPasswordReset(email);
+      errorMessage = null;
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+    _setLoading(false);
+  }
+  bool isLoggedIn() {
+    return _repo.isLoggedIn();
+  }
+
+  Future<void> getCurrentUser() async {
+    _setLoading(true);
+    try {
+      _currentUser = await _repo.getCurrentUser();
+      errorMessage = null;
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+    _setLoading(false);
+  }
+
+
   Future<void> logout() async {
     await _repo.logout();
-    currentUser = null;
+    _currentUser = null;
     notifyListeners();
   }
 

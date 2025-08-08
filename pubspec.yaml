@@ -49,6 +49,7 @@ dependencies:
   fluent_ui: ^4.11.5
   connectivity_plus: ^6.1.4
   google_fonts: ^6.3.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

@@ -14,7 +14,7 @@ class DAppTheme {
       'lighter': DColors.accent,
       'darker': DColors.secondary,
     }),
-    scaffoldBackgroundColor: DColors.primary,
+    scaffoldBackgroundColor: DColors.white,
     typography: Typography.raw(
       display: TextStyle(
         fontFamily: GoogleFonts.poppins().fontFamily,
