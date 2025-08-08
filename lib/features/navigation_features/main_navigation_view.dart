@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/di/service_locator.dart';
 import '../../route/app_route_names.dart';
+import '../../utils/constants/colors.dart';
 import '../admin_local_data_features/admin_local_data.dart';
 import '../auth_features/view_models/auth_view_model.dart';
 import '../home_features/home_page.dart';
@@ -23,12 +24,12 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   final List<NavigationPaneItem> _items = [
     PaneItem(
       icon: Icon(FluentIcons.home, color: Colors.red),
-      title: const Text("Home"),
+      title:  Text("Home", style: TextStyle(color: Colors.red,fontSize: 20)),
       body: const HomePage(),
     ),
     PaneItem(
-      icon: Icon(FluentIcons.settings, color: Colors.red),
-      title: const Text("Intro Page"),
+      icon: Icon(FluentIcons.profile_search, color: Colors.red),
+      title:  Text("Intro Page",style: TextStyle(color: Colors.red,fontSize: 20)),
       body: const IntroPage(),
     ),
   ];
@@ -44,9 +45,10 @@ class _MainNavigationViewState extends State<MainNavigationView> {
         items: _items,
         footerItems: [
           PaneItem(
+            tileColor: WidgetStatePropertyAll(DColors.secondary.withOpacity(0.2)),
             icon: Icon(FluentIcons.sign_out, color: Colors.red),
-            title: const Text("Logout"),
-            body: const SizedBox.shrink(), // Not used, since it's a button
+            title:  Text("Logout",style: TextStyle(color: Colors.red,fontSize: 20,),textAlign: TextAlign.center,),
+            body:  SizedBox(), // Not used, since it's a button
             onTap: () {
               _handleLogout(context);
             },
