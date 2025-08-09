@@ -116,6 +116,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               }
               return null;
             },
+            editable: true,
           ),
           const SizedBox(height: 24),
           CustomButton(

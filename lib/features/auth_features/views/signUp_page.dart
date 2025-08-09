@@ -118,6 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     }
                     return null;
                   },
+                  editable: true,
                 ),
                 const SizedBox(height: 20),
                 CustomInputField(
@@ -134,7 +135,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       return 'Please enter a valid email';
                     }
                     return null;
-                  },
+                  }, editable: true,
                 ),
                 const SizedBox(height: 20),
                 CustomInputField(
@@ -151,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       return 'Password must be at least 6 characters';
                     }
                     return null;
-                  },
+                  }, editable: true,
                 ),
                 const SizedBox(height: 20),
                 CustomInputField(
@@ -168,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       return 'Passwords do not match';
                     }
                     return null;
-                  },
+                  }, editable: true,
                 ),
                 const SizedBox(height: 24),
                 CustomButton(

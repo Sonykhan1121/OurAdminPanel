@@ -23,13 +23,13 @@ class _MainNavigationViewState extends State<MainNavigationView> {
 
   final List<NavigationPaneItem> _items = [
     PaneItem(
-      icon: Icon(FluentIcons.home, color: Colors.red),
-      title:  Text("Home", style: TextStyle(color: Colors.red,fontSize: 20)),
+      icon: Icon(FluentIcons.home, color:DColors.secondary),
+      title:  Text("Home", style: TextStyle(color: DColors.secondary,fontSize: 16)),
       body: const HomePage(),
     ),
     PaneItem(
       icon: Icon(FluentIcons.profile_search, color: Colors.red),
-      title:  Text("Intro Page",style: TextStyle(color: Colors.red,fontSize: 20)),
+      title:  Text("Intro Page",style: TextStyle(color: Colors.red,fontSize: 16)),
       body: const IntroPage(),
     ),
   ];
@@ -47,7 +47,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           PaneItem(
             tileColor: WidgetStatePropertyAll(DColors.secondary.withOpacity(0.2)),
             icon: Icon(FluentIcons.sign_out, color: Colors.red),
-            title:  Text("Logout",style: TextStyle(color: Colors.red,fontSize: 20,),textAlign: TextAlign.center,),
+            title:  Text("Logout",style: TextStyle(color: DColors.secondary,fontSize: 16,),textAlign: TextAlign.center,),
             body:  SizedBox(), // Not used, since it's a button
             onTap: () {
               _handleLogout(context);

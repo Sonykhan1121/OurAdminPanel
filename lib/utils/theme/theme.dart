@@ -7,10 +7,11 @@ class DAppTheme {
 
   /// -- Light Fluent Theme
   static FluentThemeData lightTheme = FluentThemeData(
+    menuColor: DColors.white,
 
     brightness: Brightness.light,
     accentColor: AccentColor.swatch({
-      'normal': DColors.primary,
+      'normal': DColors.white,
       'lighter': DColors.accent,
       'darker': DColors.secondary,
     }),
@@ -42,14 +43,14 @@ class DAppTheme {
     ),
     buttonTheme: ButtonThemeData(
       defaultButtonStyle: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(DColors.primary),
-        foregroundColor: WidgetStateProperty.all(DColors.textWhite),
+        backgroundColor: WidgetStateProperty.all(DColors.white),
+        foregroundColor: WidgetStateProperty.all(DColors.black),
       ),
     ),
     checkboxTheme: CheckboxThemeData(
       checkedDecoration: WidgetStateProperty.all(
         BoxDecoration(
-          color: DColors.primary,
+          color: DColors.white,
           borderRadius: BorderRadius.circular(4),
         ),
       ),

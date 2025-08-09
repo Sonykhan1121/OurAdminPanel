@@ -15,4 +15,9 @@ class AppTexts {
   static const String phoneInvalid =
       'Invalid phone number format. A Bangladeshi phone number must have 11 digits with an optional +8801, 8801, or 01';
   static const String appName  = "Admin Panel";
+  static const String bucketName  = "portfoliodata";
+  static const String imagePath  = "Image";
+  static const String pdfPath  = "pdf_file";
+
+
 }

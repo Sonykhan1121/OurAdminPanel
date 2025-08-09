@@ -1,4 +1,5 @@
 import 'package:admin_panel/features/admin_local_data_features/admin_local_data.dart';
+import 'package:admin_panel/features/auth_features/view_models/supabase_view_model.dart';
 import 'package:admin_panel/route/app_router.dart';
 import 'package:admin_panel/utils/constants/app_texts.dart';
 import 'package:admin_panel/utils/theme/theme.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>sl<AuthViewModel>()),
+        ChangeNotifierProvider(create: (_)=>sl<SupabaseViewModel>()),
 
       ],
       child: FluentApp.router(

@@ -12,6 +12,7 @@ class CustomInputField extends StatelessWidget {
   final TextInputType keyboardType;
   final Widget? prefixIcon;
   final bool isRequired;
+  final bool editable;
 
   const CustomInputField({
     super.key,
@@ -23,6 +24,7 @@ class CustomInputField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.prefixIcon,
     this.isRequired = true,
+    required this.editable
   });
 
   @override
@@ -32,7 +34,7 @@ class CustomInputField extends StatelessWidget {
       children: [
         Text(
           label + (isRequired ? ' *' : ''),
-          style: const TextStyle(
+          style:  TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: Colors.black,
@@ -40,6 +42,7 @@ class CustomInputField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextFormBox(
+          enabled: editable,
           controller: controller,
           placeholder: placeholder,
           obscureText: isPassword,

@@ -118,6 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                     }
                     return null;
                   },
+                    editable: true,
                 ),
                 const SizedBox(height: 20),
                 CustomInputField(
@@ -134,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                       return 'Password must be at least 6 characters';
                     }
                     return null;
-                  },
+                  }, editable: true,
                 ),
                 const SizedBox(height: 16),
                 Align(

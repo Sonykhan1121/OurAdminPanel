@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'dart:io';
 
@@ -90,5 +91,28 @@ class _ProfilePickerState extends State<ProfilePicker> {
 
   Future<void> _pickImage() async {
     print('Pick image called');
+    // Pick an image file
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null && result.files.single.path != null) {
+      String path = result.files.single.path!;
+      print('Selected image path: $path');
+
+      // You can now use this path to load the image file or do further processing
+      File imageFile = File(path);
+
+      // Example: you could store the file or update your state
+      setState(() {
+        _selectedImage = imageFile;
+      });
+      widget.onImageSelected?.call(imageFile);
+
+    } else {
+      // User canceled the picker
+      print('No image selected.');
+    }
   }
 }
