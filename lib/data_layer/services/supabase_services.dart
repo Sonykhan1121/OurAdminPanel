@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
@@ -31,15 +34,69 @@ class SupabaseService {
   }
 
 
-  // Insert data into a Supabase table
-  Future<void> insertData({
+  // Insert or update data in a Supabase table
+  Future<void> upsertData({
     required String table,
     required Map<String, dynamic> data,
+    String? conflictTarget, // column(s) to check for conflict, e.g. "id"
   }) async {
-    final response = await client.from(table).insert(data);
-
-    if (response.error != null) {
-      throw Exception('Insert failed: ${response.error!.message}');
+    try {
+      await client
+          .from(table)
+          .upsert(data, onConflict: conflictTarget)
+          .select(); // returns the updated/inserted row
+    } catch (e) {
+      print('Data upsert failed: $e');
+      throw Exception('Data upsert failed: $e');
     }
   }
+  Future<Map<String, dynamic>?> getRowById({
+    required String table,
+    required int id,
+  }) async {
+    try {
+      final response = await client
+          .from(table)
+          .select()
+          .eq('id', id)
+          .maybeSingle(); // returns the row or null
+
+      return response;
+    } catch (e) {
+      print('Error fetching row by id: $e');
+      throw Exception('Failed to fetch row by id: $e');
+    }
+  }
+
+  Future<String> downloadAndSaveFile(String url, String fileName) async {
+    try {
+      // Fetch file bytes from the URL
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download file: ${response.statusCode}');
+      }
+
+      // Get local directory - for Windows, use getApplicationSupportDirectory or getDownloadsDirectory
+      final directory = await getApplicationSupportDirectory();
+
+      // Or for user Downloads folder (Windows only):
+      // final directory = await getDownloadsDirectory();
+      // But note getDownloadsDirectory() is only available on some platforms
+
+      // Create local file path
+      final filePath = path.join(directory.path, fileName);
+
+      // Write file bytes to local file
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+
+      // Return local file URI string (file:///C:/...)
+      return file.uri.toString();
+    } catch (e) {
+      throw Exception('Error downloading file: $e');
+    }
+  }
+
+
+
 }

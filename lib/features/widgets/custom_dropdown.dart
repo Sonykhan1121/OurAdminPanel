@@ -98,7 +98,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       (item) => ComboBoxItem<T>(
                         value: item.value,
                         child: Text(
-                          item.text,
+                          item.value.toString(),
                           style: TextStyle(color: textColor, fontSize: 14),
                         ),
                       ),
@@ -131,7 +131,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
 class DropdownItem<T> {
   final T value;
-  final String text;
 
-  DropdownItem({required this.value, required this.text});
+
+  DropdownItem( this.value);
 }

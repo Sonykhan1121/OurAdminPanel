@@ -18,6 +18,7 @@ class AppTexts {
   static const String bucketName  = "portfoliodata";
   static const String imagePath  = "Image";
   static const String pdfPath  = "pdf_file";
+  static const String introTable  = "IntroModel";
 
 
 }

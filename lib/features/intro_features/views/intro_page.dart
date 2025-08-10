@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:admin_panel/features/intro_features/model/intro_model.dart';
 import 'package:admin_panel/features/widgets/bottom_button_bar.dart';
 import 'package:admin_panel/features/widgets/custom_dropdown.dart';
 import 'package:admin_panel/utils/constants/app_texts.dart';
@@ -28,50 +30,79 @@ class _IntroPageState extends State<IntroPage> {
   String longText = 'Write message here...';
   final supabaseProvider = sl<SupabaseViewModel>();
   final List<DropdownItem<String>> itDesignations = [
-    DropdownItem(
-      value: 'junior_software_dev',
-      text: 'Junior Software Developer',
-    ),
-    DropdownItem(value: 'software_dev', text: 'Software Developer'),
-    DropdownItem(
-      value: 'senior_software_engineer',
-      text: 'Senior Software Engineer',
-    ),
-    DropdownItem(
-      value: 'lead_software_engineer',
-      text: 'Lead Software Engineer',
-    ),
-    DropdownItem(value: 'frontend_dev', text: 'Frontend Developer'),
-    DropdownItem(value: 'backend_dev', text: 'Backend Developer'),
-    DropdownItem(value: 'fullstack_dev', text: 'Full-Stack Developer'),
-    DropdownItem(value: 'mobile_dev', text: 'Mobile App Developer'),
-    DropdownItem(value: 'game_dev', text: 'Game Developer'),
-    DropdownItem(value: 'devops_engineer', text: 'DevOps Engineer'),
-    DropdownItem(value: 'cloud_engineer', text: 'Cloud Engineer'),
-    DropdownItem(value: 'data_analyst', text: 'Data Analyst'),
-    DropdownItem(value: 'data_engineer', text: 'Data Engineer'),
-    DropdownItem(value: 'data_scientist', text: 'Data Scientist'),
-    DropdownItem(value: 'ml_engineer', text: 'Machine Learning Engineer'),
-    DropdownItem(value: 'ai_research_engineer', text: 'AI Research Engineer'),
-    DropdownItem(value: 'ui_ux_designer', text: 'UI/UX Designer'),
-    DropdownItem(value: 'qa_engineer', text: 'QA Engineer'),
-    DropdownItem(value: 'automation_tester', text: 'Automation Test Engineer'),
-    DropdownItem(value: 'it_support', text: 'IT Support Specialist'),
-    DropdownItem(value: 'network_admin', text: 'Network Administrator'),
-    DropdownItem(value: 'sys_admin', text: 'Systems Administrator'),
-    DropdownItem(
-      value: 'cybersecurity_specialist',
-      text: 'Cybersecurity Specialist',
-    ),
-    DropdownItem(value: 'security_engineer', text: 'Security Engineer'),
-    DropdownItem(value: 'project_manager', text: 'Project Manager (IT)'),
-    DropdownItem(value: 'product_manager', text: 'Product Manager (Tech)'),
-    DropdownItem(value: 'cto', text: 'Chief Technology Officer (CTO)'),
-    DropdownItem(value: 'cio', text: 'Chief Information Officer (CIO)'),
+    DropdownItem('Junior Software Developer'),
+    DropdownItem('Software Developer'),
+    DropdownItem('Senior Software Engineer'),
+    DropdownItem('Lead Software Engineer'),
+    DropdownItem('Frontend Developer'),
+    DropdownItem('Backend Developer'),
+    DropdownItem('Full-Stack Developer'),
+    DropdownItem('Mobile App Developer'),
+    DropdownItem('Game Developer'),
+    DropdownItem('DevOps Engineer'),
+    DropdownItem('Cloud Engineer'),
+    DropdownItem('Data Analyst'),
+    DropdownItem('Data Engineer'),
+    DropdownItem('Data Scientist'),
+    DropdownItem('Machine Learning Engineer'),
+    DropdownItem('AI Research Engineer'),
+    DropdownItem('UI/UX Designer'),
+    DropdownItem('QA Engineer'),
+    DropdownItem('Automation Test Engineer'),
+    DropdownItem('IT Support Specialist'),
+    DropdownItem('Network Administrator'),
+    DropdownItem('Systems Administrator'),
+    DropdownItem('Cybersecurity Specialist'),
+    DropdownItem('Security Engineer'),
+    DropdownItem('Project Manager (IT)'),
+    DropdownItem('Product Manager (Tech)'),
+    DropdownItem('Chief Technology Officer (CTO)'),
+    DropdownItem('Chief Information Officer (CIO)'),
   ];
+
   File? selectedPDF;
+  String? pdf_url;
+  String? image_url;
   Map<String,String> socialLinks ={};
   bool loading = false;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController backPictureTitleController = TextEditingController();
+  final TextEditingController frontPictureTitleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+   String designation= 'Software Developer';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    m.WidgetsBinding.instance.addPostFrameCallback((_){
+      // Load initial data from Supabase
+      loadDataFromSupabase();
+    });
+
+  }
+  Future<void> loadDataFromSupabase() async {
+   Map<String, dynamic>? data = await supabaseProvider.getRowById(
+      table: AppTexts.introTable,
+      id: 1,
+    );
+    if (data != null) {
+      print('Fetched data: ${jsonEncode(data)}');
+      // Populate fields with fetched data
+      nameController.text = data['name'] ?? '';
+      image_url = data['imagePath'];
+      designation = data['designation'] ?? 'Software Developer';
+      descriptionController.text = data['description'] ?? '';
+      backPictureTitleController.text = data['pictureFontTitle'] ?? '';
+      frontPictureTitleController.text = data['pictureBackTitle'] ?? '';
+      pdf_url = data['pdfPath'] ?? '';
+
+      socialLinks = Map<String, String>.from(data['socialLinks'] ?? {});
+      print('Loaded social links: $socialLinks');
+      if(mounted) setState(() {});
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,14 +121,15 @@ class _IntroPageState extends State<IntroPage> {
             children: [
               ProfilePicker(
                 size: 120,
-                initialImageUrl: 'assets/images/profile.png',
+                // initialImageUrl: 'assets/images/profile.png',
+                 initialImageUrl: image_url,
                 onImageSelected: (file) async {
                   try {
                     print('Selected image: ${file?.path}');
                     print('file : $file');
                     if (file == null) return;
 
-                    String fileName = file.path.split('\\').last;
+                    String fileName = file.path.split('.').last;
                     final bytes = await file.readAsBytes();
 
                     print('Uploading file: $fileName, bytes length: ${bytes.length}');
@@ -109,6 +141,10 @@ class _IntroPageState extends State<IntroPage> {
                     print('File uploaded to Supabase: $fileName ${supabaseProvider.uploadedFileUrl}');
                     print('supabaseProvider status: ${supabaseProvider.status}');
                     print('supabaseProvider error: ${supabaseProvider.errorMessage}');
+                    if (supabaseProvider.uploadedFileUrl != null) {
+                      image_url = supabaseProvider.uploadedFileUrl;
+
+                    }
                   } catch (e, st) {
                     print('Error during upload: $e');
                     print(st);
@@ -126,6 +162,7 @@ class _IntroPageState extends State<IntroPage> {
                 placeholder: 'Enter your Name',
                 isPassword: false,
                 prefixIcon: const Icon(FluentIcons.title, size: 18),
+                controller: nameController,
 
               ),
               SizedBox(height: 20),
@@ -134,9 +171,12 @@ class _IntroPageState extends State<IntroPage> {
                 label: 'Select Designation',
                 placeholder: 'Choose a designation...',
                 items: itDesignations,
-                value: 'software_dev',
-                onChanged: (value) {
-                  print('Selected: $value');
+                value: designation,
+                onChanged: (value,) {
+                  designation = value!;
+                  setState(() {
+
+                  });
                 },
                 isRequired: true,
                 errorText: null,
@@ -158,8 +198,9 @@ class _IntroPageState extends State<IntroPage> {
                 isRequired: true,
                 maxLength: 500,
                 value: longText,
-                onChanged: editable ? (value) => setState(() => longText = value) : null,
+                onChanged: editable ? (value,) => setState(() => longText = value) : null,
                 editable: editable,
+                controller: descriptionController,
               ),
               const SizedBox(height: 20),
 
@@ -170,6 +211,7 @@ class _IntroPageState extends State<IntroPage> {
                 isPassword: false,
                 prefixIcon: const Icon(FluentIcons.back, size: 18),
 editable: editable,
+                controller: backPictureTitleController,
               ),
               SizedBox(height: 20),
               CustomInputField(
@@ -178,6 +220,7 @@ editable: editable,
                 isPassword: false,
                 prefixIcon: const Icon(FluentIcons.padding_top, size: 18),
 editable: editable,
+                controller: frontPictureTitleController,
               ),
 
               // PDF Picker Demo
@@ -185,7 +228,28 @@ editable: editable,
                 label: 'Resume/CV',
                 isRequired: false,
                 initialFile: selectedPDF,
-                onFileSelected: editable?(file) => setState(() => selectedPDF = file):null,
+                initialFilePath: pdf_url,
+                onFileSelected: editable? (file) async {
+                  print('Selected image: ${file?.path}');
+                  print('file : $file');
+                  if (file == null) return;
+
+                  String fileName = file.path.split('\\').last;
+                  final bytes = await file.readAsBytes();
+
+                  print('Uploading file: $fileName, bytes length: ${bytes.length}');
+                  await supabaseProvider.uploadFile(
+                    bucket: AppTexts.bucketName,
+                    path: "${AppTexts.pdfPath}/$fileName",
+                    fileBytes: bytes,
+                  );
+                  if(supabaseProvider.uploadedFileUrl!=null)
+                    {
+                      pdf_url = supabaseProvider.uploadedFileUrl;
+                      selectedPDF = file;
+                     if(mounted) setState(() {});
+                    }
+                }:null, isEditable: editable,
               ),
               const SizedBox(height: 24),
 
@@ -193,7 +257,7 @@ editable: editable,
               CustomSocialLinksInput(
                 label: 'Social Media Links',
                 isRequired: false,
-                initialLinks: mapToSocialLinks(socialLinks, [
+                links: mapToSocialLinks(socialLinks, [
                   SocialPlatform('Facebook', m.Icons.facebook, 'https://facebook.com/'),
                   SocialPlatform('Instagram', m.Icons.camera_alt, 'https://instagram.com/'),
                   SocialPlatform('Twitter', m.Icons.alternate_email, 'https://twitter.com/'),
@@ -208,6 +272,7 @@ editable: editable,
                   socialLinks = {
                     for (var link in links) link.platform.name: link.url,
                   };
+                  print('Updated social links: $socialLinks');
                   setState(() {});
                 },
               ),
@@ -224,6 +289,7 @@ editable: editable,
       ),
       bottomBar: BottomButtonBar(
         isEditing: editable,
+        isSaving: loading,
         onEdit: () {
           editable = !editable;
           setState(() {});
@@ -233,6 +299,7 @@ editable: editable,
           setState(() {});
         },
         onSave: () async {
+          print('Saving data...');
           loading = true;
           if(mounted) {
             setState(() {
@@ -240,12 +307,13 @@ editable: editable,
             });
           }
           await SendToSupabase(
-            name: 'John Doe',
-            designation: 'Software Developer',
+            name: nameController.text,
+            img_url: image_url??"",
+            designation: designation,
             description: longText,
-            backPictureTitle: 'Back Picture',
-            frontPictureTitle: 'Front Picture',
-            resume: selectedPDF,
+            backPictureTitle: backPictureTitleController.text,
+            frontPictureTitle: frontPictureTitleController.text,
+            pdf_url: pdf_url??"",
             socialLinks: socialLinks,
           );
 
@@ -261,15 +329,33 @@ editable: editable,
   }
 
   Future<void> SendToSupabase(
-      {required String name, required String designation, required String description, required String backPictureTitle, required String frontPictureTitle, File? resume, required Map<String,String> socialLinks}) async {
-    
-    
+      {required String name,required String img_url, required String designation, required String description, required String backPictureTitle, required String frontPictureTitle, required String pdf_url, required Map<String,String> socialLinks}) async {
+    print('Sending data to Supabase...');
+    await supabaseProvider.insertData(
+      table: AppTexts.introTable,
+      data:IntroModel(
+        id: 1,
+        name: name,
+        imagePath: img_url,
+        designation: designation,
+        description: description,
+        pictureBackTitle: backPictureTitle,
+        pictureFontTitle: frontPictureTitle,
+        pdfPath: pdf_url,
+        socialLinks: socialLinks,
+      ).toJson(),
+    );
+    print('supabaseProvider status: ${supabaseProvider.status}');
+    print('supabaseProvider error: ${supabaseProvider.errorMessage}');
+
+
 
   }
 
 
   // convert map to List<SocialLink> for initialLinks
   List<SocialLink> mapToSocialLinks(Map<String, String> map, List<SocialPlatform> platforms) {
+    print('Converting map to SocialLinks: $map');
     return map.entries.map((e) {
       final platform = platforms.firstWhere(
             (p) => e.key.toLowerCase() == p.name.toLowerCase(),

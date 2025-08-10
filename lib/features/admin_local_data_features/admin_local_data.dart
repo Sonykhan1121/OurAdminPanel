@@ -22,12 +22,19 @@ class AdminLocalData {
 
     // Restore session if token exists
     if (refreshToken != null) {
-      final response = await Supabase.instance.client.auth.refreshSession(refreshToken!);
-      if (response.session != null) {
-        user = response.session!.user;
-        // Save latest token (it can change)
-        await saveAdminData();
-      }
+      try {
+        final response = await Supabase.instance.client.auth.refreshSession(
+            refreshToken!);
+
+        if (response.session != null) {
+          user = response.session!.user;
+          // Save latest token (it can change)
+          await saveAdminData();
+        }
+      }catch(e)
+    {
+      await resetAdmin();
+    }
     }
   }
 

@@ -2,32 +2,25 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:admin_panel/utils/constants/colors.dart';
 
-class CustomSocialLinksInput extends StatefulWidget {
+class CustomSocialLinksInput extends StatelessWidget {
   final String label;
-  final List<SocialLink>? initialLinks;
+  final List<SocialLink> links;
   final Function(List<SocialLink>)? onLinksChanged;
   final bool isRequired;
   final String? errorText;
-  final bool editable; // added editable flag
+  final bool editable;
 
-  const CustomSocialLinksInput({
+  CustomSocialLinksInput({
     Key? key,
     required this.label,
-    this.initialLinks,
+    required this.links,
     this.onLinksChanged,
     this.isRequired = false,
     this.errorText,
-    this.editable = true, // default true, allow editing by default
+    this.editable = true,
   }) : super(key: key);
 
-  @override
-  State<CustomSocialLinksInput> createState() => _CustomSocialLinksInputState();
-}
-
-class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
-  late List<SocialLink> _links;
-
-  final List<SocialPlatform> _platforms = [
+  final List<SocialPlatform> _platforms = const [
     SocialPlatform('Facebook', m.Icons.facebook, 'https://facebook.com/'),
     SocialPlatform('Instagram', m.Icons.camera_alt, 'https://instagram.com/'),
     SocialPlatform('Twitter', m.Icons.alternate_email, 'https://twitter.com/'),
@@ -37,58 +30,51 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
     SocialPlatform('Website', FluentIcons.globe, 'https://'),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _links = widget.initialLinks != null
-        ? widget.initialLinks!
-        .map((link) => SocialLink(
-      platform: link.platform,
-      url: link.url,
-      controller: TextEditingController(text: link.url),
-    ))
-        .toList()
-        : [];
-  }
-
   void _addLink() {
-    if (!widget.editable) return;
-    setState(() {
-      _links.add(SocialLink(
-        platform: _platforms.first,
+    if (!editable) return;
+
+    // Find first platform not already used
+    final existingPlatforms = links.map((l) => l.platform).toSet();
+    final availablePlatform = _platforms.firstWhere(
+          (p) => !existingPlatforms.contains(p),
+      orElse: () => _platforms.first, // fallback if all used
+    );
+
+    // Only add if there's a free platform left
+    if (!existingPlatforms.contains(availablePlatform)) {
+      final newLink = SocialLink(
+        platform: availablePlatform,
         url: '',
         controller: TextEditingController(),
-      ));
-    });
-    _notifyChange();
+      );
+
+      print('Adding new link: $newLink');
+      onLinksChanged?.call([...links, newLink]);
+    } else {
+      print('All platforms already added.');
+    }
   }
+
 
   void _removeLink(int index) {
-    if (!widget.editable) return;
-    setState(() {
-      _links[index].controller.dispose();
-      _links.removeAt(index);
-    });
-    _notifyChange();
+    if (!editable) return;
+    final updated = List<SocialLink>.from(links);
+    updated[index].controller.dispose();
+    updated.removeAt(index);
+    onLinksChanged?.call(updated);
   }
 
-  void _updateLink(int index, SocialPlatform? platform, String url) {
-    if (!widget.editable) return;
-    setState(() {
-      if (platform != null) {
-        _links[index].platform = platform;
+  void _updateLink(int index, {SocialPlatform? platform, String? url}) {
+    if (!editable) return;
+    final updated = List<SocialLink>.from(links);
+    if (platform != null) updated[index].platform = platform;
+    if (url != null) {
+      updated[index].url = url;
+      if (updated[index].controller.text != url) {
+        updated[index].controller.text = url;
       }
-      _links[index].url = url;
-      // Also update controller text if it differs to keep sync
-      if (_links[index].controller.text != url) {
-        _links[index].controller.text = url;
-      }
-    });
-    _notifyChange();
-  }
-
-  void _notifyChange() {
-    widget.onLinksChanged?.call(_links);
+    }
+    onLinksChanged?.call(updated);
   }
 
   bool _isValidUrl(String url) {
@@ -106,13 +92,13 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
           children: [
             RichText(
               text: TextSpan(
-                text: widget.label,
+                text: label,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: DColors.black,
                 ),
-                children: widget.isRequired
+                children: isRequired
                     ? [
                   TextSpan(
                     text: ' *',
@@ -122,7 +108,7 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
                     : [],
               ),
             ),
-            if (widget.editable)
+            if (editable)
               Button(
                 onPressed: _addLink,
                 child: Row(
@@ -137,50 +123,11 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
           ],
         ),
         const SizedBox(height: 8),
-        if (_links.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: DColors.white,
-              border: Border.all(
-                color: widget.errorText != null
-                    ? DColors.error
-                    : DColors.black.withOpacity(0.5),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  FluentIcons.link,
-                  size: 32,
-                  color: DColors.textSecondary,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'No social links added yet',
-                  style: TextStyle(
-                    color: DColors.textSecondary,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Click "Add Link" to start adding your social media links',
-                  style: TextStyle(
-                    color: DColors.textSecondary,
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          )
+        if (links.isEmpty)
+          _buildEmptyState()
         else
           Column(
-            children: _links.asMap().entries.map((entry) {
+            children: links.asMap().entries.map((entry) {
               int index = entry.key;
               SocialLink link = entry.value;
               bool hasError = link.url.isNotEmpty && !_isValidUrl(link.url);
@@ -204,27 +151,29 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
                     Row(
                       children: [
                         SizedBox(
-                          width: 120,
+                          width: 300,
                           child: ComboBox<SocialPlatform>(
                             value: link.platform,
+                            style: TextStyle(fontSize: 11),
                             items: _platforms
                                 .map(
                                   (platform) => ComboBoxItem<SocialPlatform>(
                                 value: platform,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(platform.icon, size: 16),
-                                    const SizedBox(width: 8),
-                                    Text(platform.name),
-                                  ],
+                                child: SizedBox(
+                                  width: 250,
+                                  child: Row(
+                                    children: [
+                                      Icon(platform.icon, size: 16),
+                                      const SizedBox(width: 8),
+                                      Text(platform.name, style: TextStyle(fontSize: 11)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             )
                                 .toList(),
-                            onChanged: widget.editable
-                                ? (platform) =>
-                                _updateLink(index, platform, link.url)
+                            onChanged: editable
+                                ? (platform) => _updateLink(index, platform: platform)
                                 : null,
                           ),
                         ),
@@ -233,20 +182,18 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
                           child: TextBox(
                             controller: link.controller,
                             placeholder: '${link.platform.baseUrl}username',
-                            onChanged: widget.editable
-                                ? (value) => _updateLink(index, null, value)
+                            onChanged: editable
+                                ? (value) => _updateLink(index, url: value)
                                 : null,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                            style: const TextStyle(fontSize: 12),
                             placeholderStyle: TextStyle(
                               color: DColors.textSecondary,
-                              fontSize: 14,
+                              fontSize: 12,
                             ),
-                            enabled: widget.editable,
+                            enabled: editable,
                           ),
                         ),
-                        if (widget.editable) ...[
+                        if (editable) ...[
                           const SizedBox(width: 8),
                           IconButton(
                             icon: Icon(
@@ -277,10 +224,10 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
               );
             }).toList(),
           ),
-        if (widget.errorText != null) ...[
+        if (errorText != null) ...[
           const SizedBox(height: 4),
           Text(
-            widget.errorText!,
+            errorText!,
             style: TextStyle(
               color: DColors.error,
               fontSize: 12,
@@ -291,12 +238,47 @@ class _CustomSocialLinksInputState extends State<CustomSocialLinksInput> {
     );
   }
 
-  @override
-  void dispose() {
-    for (var link in _links) {
-      link.controller.dispose();
-    }
-    super.dispose();
+  Widget _buildEmptyState() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: DColors.white,
+        border: Border.all(
+          color: errorText != null
+              ? DColors.error
+              : DColors.black.withOpacity(0.5),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            FluentIcons.link,
+            size: 32,
+            color: DColors.textSecondary,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No social links added yet',
+            style: TextStyle(
+              color: DColors.textSecondary,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Click "Add Link" to start adding your social media links',
+            style: TextStyle(
+              color: DColors.textSecondary,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -305,14 +287,12 @@ class SocialPlatform {
   final IconData icon;
   final String baseUrl;
 
-  SocialPlatform(this.name, this.icon, this.baseUrl);
+  const SocialPlatform(this.name, this.icon, this.baseUrl);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SocialPlatform &&
-              runtimeType == other.runtimeType &&
-              name == other.name;
+          other is SocialPlatform && runtimeType == other.runtimeType && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

@@ -6,7 +6,7 @@ import '../../utils/constants/colors.dart';
 
 class ProfilePicker extends StatefulWidget {
   final double size;
-  final String? initialImageUrl;
+  final String? initialImageUrl; // Only network image URL
   final ValueChanged<File?>? onImageSelected;
   final Color borderColor;
   final double borderWidth;
@@ -28,7 +28,6 @@ class ProfilePicker extends StatefulWidget {
 
 class _ProfilePickerState extends State<ProfilePicker> {
   File? _selectedImage;
-  bool _isHovering = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +44,12 @@ class _ProfilePickerState extends State<ProfilePicker> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:
-                      isHovering && widget.editable
-                          ? DColors.secondary.withOpacity(0.8)
-                          : DColors.secondary,
+                  color: isHovering && widget.editable
+                      ? widget.borderColor.withOpacity(0.8)
+                      : widget.borderColor,
                   width: widget.borderWidth,
                 ),
-                image: _buildImageDecoration(),
+                image: _buildDecorationImage(),
               ),
             ),
             if (isHovering && widget.editable)
@@ -74,24 +72,26 @@ class _ProfilePickerState extends State<ProfilePicker> {
     );
   }
 
-  DecorationImage? _buildImageDecoration() {
-    if (_selectedImage != null) {
+  DecorationImage? _buildDecorationImage() {
+    // Show user picked image first (local preview)
+    if (_selectedImage != null && _selectedImage!.existsSync()) {
       return DecorationImage(
         image: FileImage(_selectedImage!),
         fit: BoxFit.cover,
       );
-    } else if (widget.initialImageUrl != null) {
-      return DecorationImage(
-        image: AssetImage(widget.initialImageUrl!),
-        fit: BoxFit.cover,
-      );
     }
-    return null;
+
+    final url = widget.initialImageUrl;
+    if (url == null) return null;
+
+    return DecorationImage(
+      image: NetworkImage(url),
+      fit: BoxFit.cover,
+    );
   }
 
   Future<void> _pickImage() async {
     print('Pick image called');
-    // Pick an image file
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
@@ -101,17 +101,17 @@ class _ProfilePickerState extends State<ProfilePicker> {
       String path = result.files.single.path!;
       print('Selected image path: $path');
 
-      // You can now use this path to load the image file or do further processing
       File imageFile = File(path);
+      if (!await imageFile.exists()) {
+        print('Warning: picked file does not exist at path');
+        return;
+      }
 
-      // Example: you could store the file or update your state
       setState(() {
         _selectedImage = imageFile;
       });
       widget.onImageSelected?.call(imageFile);
-
     } else {
-      // User canceled the picker
       print('No image selected.');
     }
   }

@@ -15,6 +15,7 @@ class CustomLongTextInput extends StatefulWidget {
   final int maxLines;
   final int? maxLength;
   final bool editable;
+  final TextEditingController controller;
 
   const CustomLongTextInput({
     Key? key,
@@ -27,6 +28,7 @@ class CustomLongTextInput extends StatefulWidget {
     this.maxLines = 6,
     this.maxLength,
     required this.editable,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -34,25 +36,25 @@ class CustomLongTextInput extends StatefulWidget {
 }
 
 class _CustomLongTextInputState extends State<CustomLongTextInput> {
-  late TextEditingController _controller;
+
   int _currentLength = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.value ?? '');
-    _currentLength = _controller.text.length;
-    _controller.addListener(() {
+
+    _currentLength = widget.controller.text.length;
+    widget.controller.addListener(() {
       setState(() {
-        _currentLength = _controller.text.length;
+        _currentLength = widget.controller.text.length;
       });
-      widget.onChanged?.call(_controller.text);
+      widget.onChanged?.call(widget.controller.text);
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+
     super.dispose();
   }
 
@@ -108,7 +110,7 @@ class _CustomLongTextInputState extends State<CustomLongTextInput> {
           ),
           child: TextBox(
             enabled: widget.editable,
-            controller: _controller,
+            controller: widget.controller,
             placeholder: widget.placeholder,
             maxLines: widget.maxLines,
             maxLength: widget.maxLength,

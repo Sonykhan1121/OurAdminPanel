@@ -9,17 +9,21 @@ import '../../utils/constants/colors.dart';
 class CustomPDFPicker extends StatefulWidget {
   final String label;
   final Function(File?)? onFileSelected;
+  final String? initialFilePath;
   final File? initialFile;
   final bool isRequired;
   final String? errorText;
+  final bool isEditable;
 
   const CustomPDFPicker({
     Key? key,
     required this.label,
     this.onFileSelected,
     this.initialFile,
+    this.initialFilePath,
     this.isRequired = false,
     this.errorText,
+    required this.isEditable
   }) : super(key: key);
 
   @override
@@ -36,6 +40,11 @@ class _CustomPDFPickerState extends State<CustomPDFPicker> {
   }
 
   Future<void> _pickPDF() async {
+    if(!widget.isEditable)
+      {
+        return;
+      }
+
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -57,6 +66,7 @@ class _CustomPDFPickerState extends State<CustomPDFPicker> {
   void _removeFile() {
     setState(() {
       _selectedFile = null;
+
     });
     widget.onFileSelected?.call(null);
   }
@@ -163,7 +173,62 @@ class _CustomPDFPickerState extends State<CustomPDFPicker> {
               ],
             ),
           )
-              : GestureDetector(
+              :widget.initialFilePath!=null?GestureDetector(
+            onTap: _pickPDF,
+                child: Container(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: DColors.error.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      FluentIcons.pdf,
+                      color: DColors.error,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.initialFilePath??"",
+                          style: TextStyle(
+                            color: DColors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "online file",
+                          style: TextStyle(
+                            color: DColors.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      FluentIcons.delete,
+                      color: DColors.textSecondary,
+                      size: 16,
+                    ),
+                    onPressed: _removeFile,
+                  ),
+                ],
+                            ),
+                          ),
+              ): GestureDetector(
             onTap: _pickPDF,
             child: Container(
               height: 100,

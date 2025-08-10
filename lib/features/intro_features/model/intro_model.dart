@@ -1,7 +1,7 @@
 
 
 class IntroModel {
-  final String? id;
+  final int? id;
   final String? name;
   final String? designation;
   final String? description;
@@ -39,7 +39,7 @@ class IntroModel {
   // Factory constructor for Supabase response
   factory IntroModel.fromJson(Map<String, dynamic> json) {
     return IntroModel(
-      id: json['id'] as String?,
+      id: json['id'] as int?,
       name: json['name'] as String?,
       designation: json['designation'] as String?,
       description: json['description'] as String?,

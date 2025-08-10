@@ -47,12 +47,56 @@ class SupabaseViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await repository.addRecord(table, data);
+      print('startSendingRecord');
+       await repository.addRecord(table, data);
+      print('endSendingRecord');
       _status = SupabaseStatus.success;
+      print('endSendingRecord1');
+
     } catch (e) {
+      print('endSendingRecordcatch');
+
       _errorMessage = e.toString();
       _status = SupabaseStatus.error;
     }
     notifyListeners();
   }
+  Future<Map<String, dynamic>?> getRowById({
+    required String table,
+    required int id,
+  }) async {
+    _status = SupabaseStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final row = await repository.getRowById( table, id);
+      _status = SupabaseStatus.success;
+      return row;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _status = SupabaseStatus.error;
+      return null;
+    } finally {
+      notifyListeners();
+    }
+  }
+  Future<String> downloadAndSaveFile(String url, String filename) async {
+    _status = SupabaseStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final filePath = await repository.downloadAndSaveFile(url, filename);
+      _status = SupabaseStatus.success;
+      return filePath;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _status = SupabaseStatus.error;
+      return '';
+    } finally {
+      notifyListeners();
+    }
+  }
+
 }
