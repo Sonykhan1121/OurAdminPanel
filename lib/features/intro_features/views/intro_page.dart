@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:admin_panel/features/intro_features/model/intro_model.dart';
 import 'package:admin_panel/features/widgets/bottom_button_bar.dart';
 import 'package:admin_panel/features/widgets/custom_dropdown.dart';
+import 'package:admin_panel/features/widgets/custom_page_header.dart';
 import 'package:admin_panel/utils/constants/app_texts.dart';
+import 'package:admin_panel/utils/snackbar_toast/snak_bar.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as m;
 
@@ -93,6 +95,7 @@ class _IntroPageState extends State<IntroPage> {
       image_url = data['imagePath'];
       designation = data['designation'] ?? 'Software Developer';
       descriptionController.text = data['description'] ?? '';
+      longText = descriptionController.text;
       backPictureTitleController.text = data['pictureFontTitle'] ?? '';
       frontPictureTitleController.text = data['pictureBackTitle'] ?? '';
       pdf_url = data['pdfPath'] ?? '';
@@ -107,13 +110,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      header: PageHeader(
-        title: Text(
-          'Intro Page',
-          style: TextStyle(color: DColors.secondary, fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-      ),
+      header: CustomPageHeader(text: 'Intro Page'),
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -266,7 +263,7 @@ editable: editable,
                   SocialPlatform('TikTok', m.Icons.music_note, 'https://tiktok.com/@'),
                   SocialPlatform('Website', FluentIcons.globe, 'https://'),
                 ]),
-                editable: true, // or false
+                editable: editable, // or false
                 onLinksChanged: (links) {
                   // Convert back to map if you want
                   socialLinks = {
@@ -310,12 +307,13 @@ editable: editable,
             name: nameController.text,
             img_url: image_url??"",
             designation: designation,
-            description: longText,
+            description: descriptionController.text,
             backPictureTitle: backPictureTitleController.text,
             frontPictureTitle: frontPictureTitleController.text,
             pdf_url: pdf_url??"",
             socialLinks: socialLinks,
           );
+
 
           loading = false;
           if(mounted) {
@@ -323,6 +321,7 @@ editable: editable,
 
             });
           }
+          DSnackBar.success(title: "Data upload Successfully");
         },
       ),
     );

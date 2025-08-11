@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth_features/view_models/auth_view_model.dart';
+import 'features/service_features/view_models/service_view_model.dart';
 
 
 void main() async {
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_)=>sl<AuthViewModel>()),
         ChangeNotifierProvider(create: (_)=>sl<SupabaseViewModel>()),
+        ChangeNotifierProvider(create: (_)=>ServiceViewModel()),
 
       ],
       child: FluentApp.router(

@@ -1,4 +1,9 @@
+import 'dart:developer';
+
+import 'package:admin_panel/features/experieces_features/views/experience_page.dart';
 import 'package:admin_panel/features/intro_features/views/intro_page.dart';
+import 'package:admin_panel/features/projects_features/views/project_page.dart';
+import 'package:admin_panel/features/service_features/views/service_page.dart';
 import 'package:admin_panel/features/widgets/show_confirmation_dialog.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
@@ -23,14 +28,29 @@ class _MainNavigationViewState extends State<MainNavigationView> {
 
   final List<NavigationPaneItem> _items = [
     PaneItem(
-      icon: Icon(FluentIcons.home, color:DColors.secondary),
+      icon: Icon(FluentIcons.home, color:DColors.black),
       title:  Text("Home", style: TextStyle(color: DColors.secondary,fontSize: 16)),
       body: const HomePage(),
     ),
     PaneItem(
-      icon: Icon(FluentIcons.profile_search, color: Colors.red),
+      icon: Icon(FluentIcons.profile_search, color: Colors.black),
       title:  Text("Intro Page",style: TextStyle(color: Colors.red,fontSize: 16)),
       body: const IntroPage(),
+    ),
+    PaneItem(
+      icon: Icon(FluentIcons.service_activity, color: Colors.black),
+      title:  Text("Services",style: TextStyle(color: Colors.red,fontSize: 16)),
+      body: const ServicePage(),
+    ),
+    PaneItem(
+      icon: Icon(FluentIcons.calendar_year, color: Colors.black),
+      title:  Text("Experiences",style: TextStyle(color: Colors.red,fontSize: 16)),
+      body: const ExperiencePage(),
+    ),
+    PaneItem(
+      icon: Icon(FluentIcons.project_collection, color: Colors.black),
+      title:  Text("Projects",style: TextStyle(color: Colors.red,fontSize: 16)),
+      body: const ProjectPage(),
     ),
   ];
 

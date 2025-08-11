@@ -15,6 +15,15 @@ class AppRouteNames{
   static const String homePage = 'home';
   static const String introPage_path = '/intro';
   static const String introPage = 'intro';
+  static const String servicePage_path = '/servicePage';
+  static const String servicePage = 'servicePage';
+
+  static const String experiencePage_path = '/experiencePage';
+  static const String experiencePage = 'experiencePage';
+
+  static const String projectPage_path = '/projectPage';
+  static const String projectPage = 'projectPage';
+
   static const String mainNavigationView_path = '/mainNavigationView';
   static const String mainNavigationViewPage = 'mainNavigationView';
 

@@ -1,0 +1,71 @@
+import 'package:admin_panel/features/widgets/custom_page_header.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
+import '../../widgets/bottom_button_bar.dart';
+
+class ProjectPage extends StatefulWidget {
+  const ProjectPage({super.key});
+
+  @override
+  State<ProjectPage> createState() => _ProjectPageState();
+}
+
+class _ProjectPageState extends State<ProjectPage> {
+  bool editable = false;
+  bool loading = false;
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPage(
+        header: CustomPageHeader(text: "Projects"),
+        content: SingleChildScrollView(
+          child: Padding(padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+
+              ],
+            ),
+          ),
+        ),
+        bottomBar: BottomButtonBar(
+          isEditing: editable,
+          isSaving: loading,
+          onEdit: () {
+            editable = !editable;
+            setState(() {});
+          },
+          onCancel: () {
+            editable = !editable;
+            setState(() {});
+          },
+          onSave: () async {
+            // print('Saving data...');
+            // loading = true;
+            // if(mounted) {
+            //   setState(() {
+            //
+            //   });
+            // }
+            // await SendToSupabase(
+            //   name: nameController.text,
+            //   img_url: image_url??"",
+            //   designation: designation,
+            //   description: descriptionController.text,
+            //   backPictureTitle: backPictureTitleController.text,
+            //   frontPictureTitle: frontPictureTitleController.text,
+            //   pdf_url: pdf_url??"",
+            //   socialLinks: socialLinks,
+            // );
+            //
+            //
+            // loading = false;
+            // if(mounted) {
+            //   setState(() {
+            //
+            //   });
+            // }
+            // DSnackBar.success(title: "Data upload Successfully");
+          },
+        )
+    );
+  }
+}
